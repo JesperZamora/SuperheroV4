@@ -1,8 +1,5 @@
 package com.example.superherov4.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SuperpowerCountDTO {
     private String heroName;
     private String realName;
