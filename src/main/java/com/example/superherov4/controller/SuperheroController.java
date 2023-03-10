@@ -26,14 +26,15 @@ public class SuperheroController {
     }*/
 
     ISuperheroRepository superheroRepository;
-    public SuperheroController(ApplicationContext context, @Value("${superhero.repository.impl}") String impl){
+
+    public SuperheroController(ApplicationContext context, @Value("${superhero.repository.impl}") String impl) {
         superheroRepository = (ISuperheroRepository) context.getBean(impl);
     }
 
     @GetMapping("/{name}") //request 1.0 - one hero
-    public ResponseEntity<Superhero> getSuperhero(@PathVariable String name){
+    public ResponseEntity<Superhero> getSuperhero(@PathVariable String name) {
         Superhero superhero = superheroRepository.getSuperhero(name);
-        return new ResponseEntity<>(superhero,HttpStatus.OK);
+        return new ResponseEntity<>(superhero, HttpStatus.OK);
     }
 
 
@@ -44,25 +45,25 @@ public class SuperheroController {
     }
 
     @GetMapping("/superpower/count") //request 2.0 - all heroes with their superpower count
-    public ResponseEntity<List<SuperpowerCountDTO>> getAllHeroesWithPowerCount(){
+    public ResponseEntity<List<SuperpowerCountDTO>> getAllHeroesWithPowerCount() {
         List<SuperpowerCountDTO> superpowerCountList = superheroRepository.getSuperpowerCount();
         return new ResponseEntity<>(superpowerCountList, HttpStatus.OK);
     }
 
     @GetMapping("/superpower/count/{name}") //request 2.1 - one hero with superpower count
-    public ResponseEntity<SuperpowerCountDTO> getAllHeroesWithPowerCount(@PathVariable String name){
+    public ResponseEntity<SuperpowerCountDTO> getAllHeroesWithPowerCount(@PathVariable String name) {
         SuperpowerCountDTO superpowerCount = superheroRepository.getSuperpowerCountHero(name);
         return new ResponseEntity<>(superpowerCount, HttpStatus.OK);
     }
 
     @GetMapping("/superpower") //request 3.0 - all heroes with their superpowers
-    public ResponseEntity<List<SuperheroSuperpowerDTO>> getAllHeroesWithPower(){
+    public ResponseEntity<List<SuperheroSuperpowerDTO>> getAllHeroesWithPower() {
         List<SuperheroSuperpowerDTO> superheroSuperpower = superheroRepository.getHeroesSuperpower();
         return new ResponseEntity<>(superheroSuperpower, HttpStatus.OK);
     }
 
     @GetMapping("/superpower/{name}") //request 3.1 - one hero with superpowers
-    public ResponseEntity<SuperheroSuperpowerDTO> getOneHeroWithPower(@PathVariable String name){
+    public ResponseEntity<SuperheroSuperpowerDTO> getOneHeroWithPower(@PathVariable String name) {
         SuperheroSuperpowerDTO superheroSuperpower = superheroRepository.getHeroSuperpower(name);
         return new ResponseEntity<>(superheroSuperpower, HttpStatus.OK);
     }
