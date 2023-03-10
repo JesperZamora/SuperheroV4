@@ -178,26 +178,36 @@ public class SuperheroRepository {
 
     }
 
-    //TODO - correct it tomorrow
     public List<CityDTO> getCity(String name){
         List<CityDTO> cityList = new ArrayList<>();
 
         try(Connection con = DriverManager.getConnection(db_url,u_id,pwd)){
-            String SQL = "SELECT city_id, city, hero_name FROM city JOIN superhero USING(city_id);";
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(SQL);
+            String SQL = "SELECT superhero.city_id, city, hero_name FROM city JOIN superhero WHERE superhero.city_ID = city.city_ID AND city =?;";
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+
+            String currentCity= "";
+            CityDTO heroCity = null;
 
             while(rs.next()){
-                int cityId = rs.getInt("city_id");
                 String city = rs.getString("city");
                 String heroName = rs.getString("hero_name");
-                cityList.add(new CityDTO(cityId,city,(List.of(heroName))));
+
+                if(city.equals(currentCity)) {
+                    heroCity.addSuperhero(heroName);
+                } else {
+                    heroCity = new CityDTO(city,new ArrayList<>(List.of(heroName)));
+                    cityList.add(heroCity);
+                    currentCity = city;
+                }
             }
+            System.out.println(cityList);
+            return cityList;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return cityList;
     }
 
 }

@@ -60,8 +60,8 @@ public class SuperheroController {
         return new ResponseEntity<>(superheroSuperpower, HttpStatus.OK);
     }
 
-    //TODO Finish it tomorrow
-    //@GetMapping("/city/{name}")
+
+    @GetMapping("/city/{name}")
     public ResponseEntity<List<CityDTO>> getCity(@PathVariable String name) {
         List<CityDTO> cities = repository.getCity(name);
         return new ResponseEntity<>(cities, HttpStatus.OK);

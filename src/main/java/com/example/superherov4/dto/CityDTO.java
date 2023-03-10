@@ -3,17 +3,11 @@ package com.example.superherov4.dto;
 import java.util.List;
 
 public class CityDTO {
-    private int cityID;
     private String city;
     private List<String> cityList;
-    public CityDTO(int cityID, String city, List <String> cityList) {
-        this.cityID = cityID;
+    public CityDTO(String city, List <String> cityList) {
         this.city = city;
         this.cityList = cityList;
-    }
-
-    public int getCityID() {
-        return cityID;
     }
 
     public String getCity() {
@@ -22,5 +16,9 @@ public class CityDTO {
 
     public List<String> getCityList() {
         return cityList;
+    }
+
+    public void addSuperhero(String name){
+        cityList.add(name);
     }
 }
