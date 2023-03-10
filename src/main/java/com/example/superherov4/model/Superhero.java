@@ -5,15 +5,24 @@ public class Superhero {
     private String heroName;
     private String realName;
     private String creationYear;
-    private String heroPower;
-
-    public Superhero(int id, String heroName, String realName, String creationYear, String heroPower) {
+    private int cityId;
+    public Superhero(int id, String heroName, String realName, String creationYear, int cityId) {
         this.id = id;
         this.heroName = heroName;
         this.realName = realName;
         this.creationYear = creationYear;
-        this.heroPower = heroPower;
+        this.cityId = cityId;
     }
+    public Superhero(String heroName, String realName, String creationYear) {
+        this.heroName = heroName;
+        this.realName = realName;
+        this.creationYear = creationYear;
+    }
+
+    public int getId() {
+        return id;
+    }
+
 
     public String getHeroName() {
         return heroName;
@@ -27,9 +36,7 @@ public class Superhero {
         return creationYear;
     }
 
-    public Superhero(String heroName, String realName, String creationYear) {
-        this.heroName = heroName;
-        this.realName = realName;
-        this.creationYear = creationYear;
+    public int getCityId() {
+        return cityId;
     }
 }
