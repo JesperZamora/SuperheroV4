@@ -75,7 +75,8 @@ public class SuperheroRepository implements ISuperheroRepository {
         List<SuperpowerCountDTO> superpowerCount = new ArrayList<>();
 
         try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
-            String SQL = "SELECT superhero.superhero_id, hero_name, real_name, COUNT(superhero_id) AS count FROM superhero JOIN superheropower USING(superhero_id) GROUP BY superhero_id;";
+            String SQL = "SELECT superhero.superhero_id, hero_name, real_name, COUNT(superhero_id) AS count " +
+                    "FROM superhero JOIN superheropower USING(superhero_id) GROUP BY superhero_id;";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(SQL);
 
@@ -98,7 +99,8 @@ public class SuperheroRepository implements ISuperheroRepository {
     public SuperpowerCountDTO getSuperpowerCountHero(String name) {
         try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
             SuperpowerCountDTO superpowerCount = null;
-            String SQL = "SELECT superheropower.superhero_id, hero_name, real_name, COUNT(superheropower.superhero_id) AS count FROM superhero JOIN superheropower WHERE superheropower.superhero_id = superhero.superhero_id AND hero_name =?";
+            String SQL = "SELECT superheropower.superhero_id, hero_name, real_name, COUNT(superheropower.superhero_id) AS count " +
+                    "FROM superhero JOIN superheropower WHERE superheropower.superhero_id = superhero.superhero_id AND hero_name =?";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
@@ -123,7 +125,9 @@ public class SuperheroRepository implements ISuperheroRepository {
         List<SuperheroSuperpowerDTO> heroSuperpower = new ArrayList<>();
 
         try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
-            String SQL = "SELECT superhero.superhero_id, hero_name, real_name, superpower FROM superhero JOIN superpower JOIN superheropower ON superpower.superpower_id = superheropower.superpower_id AND superhero.superhero_id = superheropower.superhero_id;";
+            String SQL = "SELECT superhero.superhero_id, hero_name, real_name, superpower FROM superhero " +
+                    "JOIN superpower JOIN superheropower ON superpower.superpower_id = superheropower.superpower_id " +
+                    "AND superhero.superhero_id = superheropower.superhero_id;";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(SQL);
 
@@ -154,8 +158,12 @@ public class SuperheroRepository implements ISuperheroRepository {
     @Override
     public SuperheroSuperpowerDTO getHeroSuperpower(String name) {
         SuperheroSuperpowerDTO superheroSuperpower = null;
+
         try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
-            String SQL = "SELECT superhero.superhero_id, hero_name, real_name, superpower FROM superhero JOIN superpower JOIN superheropower ON superpower.superpower_id = superheropower.superpower_id AND superhero.superhero_id = superheropower.superhero_id AND hero_name = ?;";
+            String SQL = "SELECT superhero.superhero_id, hero_name, real_name, superpower FROM superhero " +
+                    "JOIN superpower JOIN superheropower ON superpower.superpower_id = superheropower.superpower_id " +
+                    "AND superhero.superhero_id = superheropower.superhero_id AND hero_name = ?;";
+
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
@@ -178,7 +186,6 @@ public class SuperheroRepository implements ISuperheroRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
@@ -186,7 +193,10 @@ public class SuperheroRepository implements ISuperheroRepository {
         List<CityDTO> superheroesCity = new ArrayList<>();
 
         try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
-            String SQL = "SELECT superhero.city_id, city, hero_name FROM city JOIN superhero WHERE superhero.city_ID = city.city_ID AND city =?;";
+            String SQL = "SELECT superhero.city_id, city, hero_name FROM city JOIN superhero " +
+                    "WHERE superhero.city_ID = city.city_ID AND city =?";
+
+
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();

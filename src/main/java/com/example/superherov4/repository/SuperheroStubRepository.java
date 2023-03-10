@@ -1,9 +1,6 @@
 package com.example.superherov4.repository;
 
 import com.example.superherov4.SuperheroInterface.ISuperheroRepository;
-import com.example.superherov4.dto.CityDTO;
-import com.example.superherov4.dto.SuperheroSuperpowerDTO;
-import com.example.superherov4.dto.SuperpowerCountDTO;
 import com.example.superherov4.model.Superhero;
 import org.springframework.stereotype.Repository;
 
