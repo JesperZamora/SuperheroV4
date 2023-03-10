@@ -4,10 +4,10 @@ import java.util.List;
 
 public class CityDTO {
     private String city;
-    private List<String> cityList;
-    public CityDTO(String city, List <String> cityList) {
+    private List<String> heroList;
+    public CityDTO(String city, List <String> heroList) {
         this.city = city;
-        this.cityList = cityList;
+        this.heroList = heroList;
     }
 
     public String getCity() {
@@ -15,10 +15,10 @@ public class CityDTO {
     }
 
     public List<String> getCityList() {
-        return cityList;
+        return heroList;
     }
 
     public void addSuperhero(String name){
-        cityList.add(name);
+        heroList.add(name);
     }
 }

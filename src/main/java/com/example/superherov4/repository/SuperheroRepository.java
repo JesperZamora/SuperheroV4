@@ -1,5 +1,6 @@
 package com.example.superherov4.repository;
 
+import com.example.superherov4.SuperheroInterface.ISuperheroRepository;
 import com.example.superherov4.dto.CityDTO;
 import com.example.superherov4.dto.SuperheroSuperpowerDTO;
 import com.example.superherov4.dto.SuperpowerCountDTO;
@@ -11,8 +12,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
-public class SuperheroRepository {
+@Repository("Superhero_db")
+public class SuperheroRepository implements ISuperheroRepository {
     @Value("${spring.datasource.url}")
     String db_url;
     @Value("${spring.datasource.username}")
@@ -20,7 +21,7 @@ public class SuperheroRepository {
     @Value("${spring.datasource.password}")
     String pwd;
 
-
+    @Override
     public Superhero getSuperhero(String name) {
         Superhero superhero = null;
         try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
@@ -37,15 +38,15 @@ public class SuperheroRepository {
                 int city_id = rs.getInt("city_id");
                 superhero = new Superhero(superhero_id, heroName, realName, creationYear, city_id);
             }
-
             return superhero;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
     }
 
-
+    @Override
     public List<Superhero> getSuperheroList() {
         List<Superhero> superheroes = new ArrayList<>();
         try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
@@ -69,31 +70,33 @@ public class SuperheroRepository {
 
     }
 
-
-    public List<SuperpowerCountDTO> getSuperpowerCount(){
+    @Override
+    public List<SuperpowerCountDTO> getSuperpowerCount() {
         List<SuperpowerCountDTO> superpowerCount = new ArrayList<>();
 
-        try(Connection con = DriverManager.getConnection(db_url,u_id,pwd)){
+        try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
             String SQL = "SELECT superhero.superhero_id, hero_name, real_name, COUNT(superhero_id) AS count FROM superhero JOIN superheropower USING(superhero_id) GROUP BY superhero_id;";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(SQL);
 
-            while(rs.next()) {
+            while (rs.next()) {
                 String heroName = rs.getString("hero_name");
                 String realName = rs.getString("real_name");
                 int count = rs.getInt("count");
 
-                superpowerCount.add(new SuperpowerCountDTO(heroName,realName,count));
+                superpowerCount.add(new SuperpowerCountDTO(heroName, realName, count));
             }
+            return superpowerCount;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
 
         }
-        return superpowerCount;
     }
 
+    @Override
     public SuperpowerCountDTO getSuperpowerCountHero(String name) {
-        try (Connection con = DriverManager.getConnection(db_url,u_id,pwd)) {
+        try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
             SuperpowerCountDTO superpowerCount = null;
             String SQL = "SELECT superheropower.superhero_id, hero_name, real_name, COUNT(superheropower.superhero_id) AS count FROM superhero JOIN superheropower WHERE superheropower.superhero_id = superhero.superhero_id AND hero_name =?";
             PreparedStatement ps = con.prepareStatement(SQL);
@@ -105,9 +108,8 @@ public class SuperheroRepository {
                 String realName = rs.getString("real_name");
                 int count = rs.getInt("count");
 
-                superpowerCount = new SuperpowerCountDTO(heroName,realName,count);
+                superpowerCount = new SuperpowerCountDTO(heroName, realName, count);
             }
-
             return superpowerCount;
 
         } catch (SQLException e) {
@@ -116,10 +118,11 @@ public class SuperheroRepository {
 
     }
 
-    public List<SuperheroSuperpowerDTO> getHeroesSuperpower(){
+    @Override
+    public List<SuperheroSuperpowerDTO> getHeroesSuperpower() {
         List<SuperheroSuperpowerDTO> heroSuperpower = new ArrayList<>();
 
-        try(Connection con = DriverManager.getConnection(db_url,u_id,pwd)) {
+        try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
             String SQL = "SELECT superhero.superhero_id, hero_name, real_name, superpower FROM superhero JOIN superpower JOIN superheropower ON superpower.superpower_id = superheropower.superpower_id AND superhero.superhero_id = superheropower.superhero_id;";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(SQL);
@@ -132,25 +135,26 @@ public class SuperheroRepository {
                 String realName = rs.getString("real_name");
                 String superpower = rs.getString("superpower");
 
-                if(heroName.equals(currentHeroName)) {
+                if (heroName.equals(currentHeroName)) {
                     superpowerDTO.addSuperpower(superpower);
                 } else {
-                    superpowerDTO = new SuperheroSuperpowerDTO(heroName,realName, new ArrayList<>(List.of(superpower)));
+                    superpowerDTO = new SuperheroSuperpowerDTO(heroName, realName, new ArrayList<>(List.of(superpower)));
                     heroSuperpower.add(superpowerDTO);
                     currentHeroName = heroName;
                 }
             }
+            return heroSuperpower;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return heroSuperpower;
     }
 
+    @Override
     public SuperheroSuperpowerDTO getHeroSuperpower(String name) {
         SuperheroSuperpowerDTO superheroSuperpower = null;
-        try(Connection con = DriverManager.getConnection(db_url,u_id,pwd)){
+        try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
             String SQL = "SELECT superhero.superhero_id, hero_name, real_name, superpower FROM superhero JOIN superpower JOIN superheropower ON superpower.superpower_id = superheropower.superpower_id AND superhero.superhero_id = superheropower.superhero_id AND hero_name = ?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, name);
@@ -162,14 +166,13 @@ public class SuperheroRepository {
                 String realName = rs.getString("real_name");
                 String superpower = rs.getString("superpower");
 
-                if(heroName.equals(currentHeroName)) {
+                if (heroName.equals(currentHeroName)) {
                     superheroSuperpower.addSuperpower(superpower);
                 } else {
-                    superheroSuperpower = new SuperheroSuperpowerDTO(heroName,realName,new ArrayList<>(List.of(superpower)));
+                    superheroSuperpower = new SuperheroSuperpowerDTO(heroName, realName, new ArrayList<>(List.of(superpower)));
                     currentHeroName = heroName;
                 }
             }
-
             return superheroSuperpower;
 
         } catch (SQLException e) {
@@ -178,32 +181,32 @@ public class SuperheroRepository {
 
     }
 
-    public List<CityDTO> getCity(String name){
-        List<CityDTO> cityList = new ArrayList<>();
+    @Override
+    public List<CityDTO> getCity(String name) {
+        List<CityDTO> superheroesCity = new ArrayList<>();
 
-        try(Connection con = DriverManager.getConnection(db_url,u_id,pwd)){
+        try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
             String SQL = "SELECT superhero.city_id, city, hero_name FROM city JOIN superhero WHERE superhero.city_ID = city.city_ID AND city =?;";
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
 
-            String currentCity= "";
+            String currentCity = "";
             CityDTO heroCity = null;
 
-            while(rs.next()){
+            while (rs.next()) {
                 String city = rs.getString("city");
                 String heroName = rs.getString("hero_name");
 
-                if(city.equals(currentCity)) {
+                if (city.equals(currentCity)) {
                     heroCity.addSuperhero(heroName);
                 } else {
-                    heroCity = new CityDTO(city,new ArrayList<>(List.of(heroName)));
-                    cityList.add(heroCity);
+                    heroCity = new CityDTO(city, new ArrayList<>(List.of(heroName)));
+                    superheroesCity.add(heroCity);
                     currentCity = city;
                 }
             }
-            System.out.println(cityList);
-            return cityList;
+            return superheroesCity;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
