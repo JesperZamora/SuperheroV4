@@ -74,4 +74,12 @@ public class SuperheroController {
         List<CityDTO> cities = superheroRepository.getCity(name);
         return new ResponseEntity<>(cities, HttpStatus.OK);
     }
+
+    @GetMapping("/city") // 4.1 - displays all cities and heroes in them
+    public ResponseEntity<List<CityDTO>> getAllHeroesInCity() {
+        List<CityDTO> allHeroesInCity = superheroRepository.getAllHeroesInCity();
+        return new ResponseEntity<>(allHeroesInCity,HttpStatus.OK);
+    }
+
+
 }

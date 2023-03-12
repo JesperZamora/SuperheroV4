@@ -193,7 +193,7 @@ public class SuperheroRepository implements ISuperheroRepository {
         List<CityDTO> superheroesCity = new ArrayList<>();
 
         try (Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
-            String SQL = "SELECT superhero.city_id, city, hero_name FROM city JOIN superhero " +
+            String SQL = "SELECT city, hero_name FROM city JOIN superhero " +
                     "WHERE superhero.city_ID = city.city_ID AND city =?";
 
 
@@ -221,6 +221,38 @@ public class SuperheroRepository implements ISuperheroRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<CityDTO> getAllHeroesInCity(){
+        List<CityDTO> allHeroesInCity = new ArrayList();
+
+        try(Connection con = DriverManager.getConnection(db_url, u_id, pwd)) {
+            String SQL = "SELECT city, hero_name FROM city JOIN superhero WHERE superhero.city_ID = city.city_ID GROUP BY superhero_id";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(SQL);
+
+            String currentCity = "";
+            CityDTO heroCity = null;
+            while(rs.next()) {
+             String city = rs.getString("city");
+             String heroName = rs.getString("hero_name");
+
+             if(city.equals(currentCity)){
+                 heroCity.addSuperhero(heroName);
+             } else {
+                 heroCity = new CityDTO(city,new ArrayList<>(List.of(heroName)));
+                 allHeroesInCity.add(heroCity);
+                 currentCity = city;
+             }
+
+            }
+            return allHeroesInCity;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 }

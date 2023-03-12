@@ -14,7 +14,7 @@ public class CityDTO {
         return city;
     }
 
-    public List<String> getCityList() {
+    public List<String> getHeroList() {
         return heroList;
     }
 

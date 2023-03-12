@@ -35,4 +35,8 @@ public interface ISuperheroRepository {
     default List<CityDTO> getCity(String name) {
         return null;
     }
+
+    default List<CityDTO> getAllHeroesInCity(){
+        return null;
+    }
 }
